@@ -31,32 +31,9 @@ jobs:
             echo "Triggering deploy pipeline on Harness"
             jq -n \
               --arg application "<<parameters.applicationKey>>" \
-              --arg organization "$CIRCLE_PROJECT_USERNAME" \
-              --arg repositoryName "$CIRCLE_PROJECT_REPONAME" \
-              --arg repositoryUrl "$CIRCLE_REPOSITORY_URL" \
-              --arg username "$CIRCLE_USERNAME" \
-              --arg branch "$CIRCLE_BRANCH" \
-              --arg workflowId "$CIRCLE_WORKFLOW_ID" \
-              --arg workflowUrl "https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_ID" \
-              --arg stage "$CIRCLE_STAGE" \
-              --arg jobName "$CIRCLE_JOB" \
-              --arg buildNumber "$CIRCLE_BUILD_NUM" \
-              --arg buildUrl "$CIRCLE_BUILD_URL" \
-              --arg commit_sha1 "$CIRCLE_SHA1" \
+
               '{
-                 "application": $application,
-                 "organization": $organization,
-                 "repositoryName": $repositoryName,
-                 "repositoryUrl": $repositoryUrl,
-                 "username": $username,
-                 "branch": $branch,
-                 "workflowId": $workflowId,
-                 "workflowUrl": $workflowUrl,
-                 "stage": $stage,
-                 "jobName": $jobName,
-                 "buildNumber": $buildNumber,
-                 "buildUrl": $buildUrl,
-                 "commit_sha1": $commit_sha1
+                 "application": $application
                }' > /tmp/harness_payload.json
 
             curl -X POST -H "Content-Type: application/json" -d @/tmp/harness_payload.json \
