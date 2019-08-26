@@ -12,7 +12,7 @@ executors:
           TERM: dumb
 
 jobs:
-  harness:
+  run-pipeline:
     executor: alpine
     parameters:
       accountId:
