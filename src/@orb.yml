@@ -31,7 +31,6 @@ jobs:
             echo "Triggering deploy pipeline on Harness"
             jq -n \
               --arg application "<<parameters.applicationKey>>" \
-
               '{
                  "application": $application
                }' > /tmp/harness_payload.json
