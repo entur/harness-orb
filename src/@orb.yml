@@ -37,7 +37,17 @@ jobs:
 
             curl -X POST -H "Content-Type: application/json" -d @/tmp/harness_payload.json \
                  "https://app.harness.io/gateway/api/webhooks/<<parameters.webhookId>>?accountId=<<parameters.accountId>>" > /tmp/harness_response.json
-            echo "Pipeline triggered: $(cat /tmp/harness_response.json| jq ".uiUrl")"
+            uiUrl=$(jq ".uiUrl" -e /tmp/harness_response.json)
+            echo "Pipeline triggered: $uiUrl"
+      - run:
+          name: Print errormessages
+          when: on_fail
+          command: |
+            jq -r \
+              'if (.responseMessages | length) != 0 then .responseMessages[] | "\(.level): \(.message)"
+               else "Unknown error: Check raw response uploaded as artifact"
+               end' \
+               /tmp/harness_response.json
       - store_artifacts:
           path: /tmp/harness_response.json
           destination: Harness_response.json
