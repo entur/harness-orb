@@ -33,7 +33,6 @@ jobs:
               --arg application "<<parameters.applicationKey>>" \
               '{
                  "application": $application
-                 ,"forcingFailure": "maBad"
                }' > /tmp/harness_payload.json
 
             curl -X POST -H "Content-Type: application/json" -d @/tmp/harness_payload.json \
