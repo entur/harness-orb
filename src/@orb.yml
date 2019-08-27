@@ -1,0 +1,53 @@
+version: 2.1
+
+description: |
+  An orb for triggering harness pipelines
+
+executors:
+  alpine:
+    resource_class: small
+    docker:
+      - image: cibuilds/base:latest
+        environment:
+          TERM: dumb
+
+jobs:
+  run-pipeline:
+    executor: alpine
+    parameters:
+      accountId:
+        description: Harness accountId
+        type: string
+      applicationKey:
+        description: The application key to put in the webhook payload
+        type: string
+      webhookId:
+        description: The webhook key (last part of the url before query parameters)
+        type: string
+    steps:
+      - run:
+          name: Trigger deploy pipeline
+          command: |
+            echo "Triggering deploy pipeline on Harness"
+            jq -n \
+              --arg application "<<parameters.applicationKey>>" \
+              '{
+                 "application": $application
+               }' > /tmp/harness_payload.json
+
+            curl -X POST -H "Content-Type: application/json" -d @/tmp/harness_payload.json \
+                 "https://app.harness.io/gateway/api/webhooks/<<parameters.webhookId>>?accountId=<<parameters.accountId>>" > /tmp/harness_response.json
+            uiUrl=$(jq ".uiUrl" -e /tmp/harness_response.json)
+            echo "Pipeline triggered: $uiUrl"
+      - run:
+          name: Print errormessages
+          when: on_fail
+          command: |
+            jq -r \
+              'if (.responseMessages | length) != 0 then .responseMessages[] | "\(.level): \(.message)"
+               else "Unknown error: Check raw response uploaded as artifact"
+               end' \
+               /tmp/harness_response.json
+      - store_artifacts:
+          path: /tmp/harness_response.json
+          destination: Harness_response.json
