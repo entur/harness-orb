@@ -78,7 +78,7 @@ jobs:
             jq -n \
               --arg application "<<parameters.applicationKey>>" \
               --arg service "<<parameters.service>>" \
-              --arg buildNumber "<<parameters.buildNumberVariableName>>" \
+              --arg buildNumber "${<<parameters.buildNumberVariableName>>}" \
               '{
                  "application": $application,
                  "artifacts": [{"service": $service, "buildNumber": $buildNumber}]
