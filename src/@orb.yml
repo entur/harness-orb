@@ -66,10 +66,10 @@ jobs:
       service:
         description: The name of the service
         type: string
-      buildNumber:
+      buildNumberVariableName:
         description: The build number / image version
-        type: string
-        default: "N/A"
+        type: env_var_name
+        default: "BUILDNUMBER"
     steps:
       - run:
           name: Trigger deploy pipeline
@@ -78,7 +78,7 @@ jobs:
             jq -n \
               --arg application "<<parameters.applicationKey>>" \
               --arg service "<<parameters.service>>" \
-              --arg buildNumber "<<parameters.buildNumber>>" \
+              --arg buildNumber "<<parameters.buildNumberVariableName>>" \
               '{
                  "application": $application,
                  "artifacts": [{"service": $service, "buildNumber": $buildNumber}]
