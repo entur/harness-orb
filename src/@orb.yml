@@ -28,7 +28,7 @@ jobs:
       - run:
           name: install deps
           command: |
-            apk update && apk add curl jq 
+            apk update && apk add curl jq
       - run:
           name: Trigger deploy pipeline
           command: |
