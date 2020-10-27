@@ -4,16 +4,16 @@ description: |
   An orb for triggering harness pipelines
 
 executors:
-  alpine:
+  default:
     resource_class: small
     docker:
-      - image: cibuilds/base:latest
+      - image: cimg/base:2020.09-18.04
         environment:
           TERM: dumb
 
 jobs:
   run-pipeline:
-    executor: alpine
+    executor: default
     parameters:
       accountId:
         description: Harness accountId
