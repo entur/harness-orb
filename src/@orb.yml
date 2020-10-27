@@ -4,16 +4,16 @@ description: |
   An orb for triggering harness pipelines
 
 executors:
-  alpine:
+  default:
     resource_class: small
     docker:
-      - image: cibuilds/base:latest
+      - image: circleci/circleci-cli:alpine
         environment:
           TERM: dumb
 
 jobs:
   run-pipeline:
-    executor: alpine
+    executor: default
     parameters:
       accountId:
         description: Harness accountId
@@ -25,6 +25,10 @@ jobs:
         description: The webhook key (last part of the url before query parameters)
         type: string
     steps:
+      - run:
+          name: install deps
+          command: |
+            apk update && apk add curl jq
       - run:
           name: Trigger deploy pipeline
           command: |
