@@ -7,7 +7,7 @@ executors:
   default:
     resource_class: small
     docker:
-      - image: cimg/base:2020.09-18.04
+      - image: circleci/circleci-cli:alpine
         environment:
           TERM: dumb
 
@@ -25,6 +25,10 @@ jobs:
         description: The webhook key (last part of the url before query parameters)
         type: string
     steps:
+      - run:
+          name: install deps
+          command: |
+            apk update && apk add curl jq 
       - run:
           name: Trigger deploy pipeline
           command: |
