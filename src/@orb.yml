@@ -47,11 +47,13 @@ jobs:
           name: Print errormessages
           when: on_fail
           command: |
-            jq -r \
-              'if (.responseMessages | length) != 0 then .responseMessages[] | "\(.level): \(.message)"
-               else "Unknown error: Check raw response uploaded as artifact"
-               end' \
-               /tmp/harness_response.json
+            if [ -f "/tmp/harness_response.json" ]; then
+                jq -r \
+                  'if (.responseMessages | length) != 0 then .responseMessages[] | "\(.level): \(.message)"
+                   else "Unknown error: Check raw response uploaded as artifact"
+                   end' \
+                   /tmp/harness_response.json
+            fi
       - store_artifacts:
           path: /tmp/harness_response.json
           destination: Harness_response.json
